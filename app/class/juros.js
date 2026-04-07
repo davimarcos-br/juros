@@ -44,9 +44,9 @@ class GerenciadorMultas {
 
         const registro = {
             vencimento: vencimento.toLocaleDateString('pt-BR'),
-            multa: multa.toFixed(2),
-            permanencia: permanencia.toFixed(2),
-            totalAPagar: total.toFixed(2),
+            multa: +multa.toFixed(2),
+            permanencia: +permanencia.toFixed(2),
+            total: +total.toFixed(2),
             diasAtraso: dias
         };
 
@@ -58,14 +58,25 @@ class GerenciadorMultas {
     getHistorico() {
         return this.historicoMultas;
     }
+
+    getTotal(){
+        const total = this.historicoMultas.reduce((a, parcela) => {
+            console.log(a + parcela.total)
+            return a + parcela.total;
+          }, 0); // 0 é o valorInicial
+          
+          console.log("total",total); 
+        return total
+    }
 }
 
 // --- Exemplo de Uso ---
-const sistema = new GerenciadorMultas(2000); // Taxa de 5%
+const sistema = new GerenciadorMultas(4000); // Taxa de 5%
 
 // Vencido
 sistema.addParcela('2026-04-01')
 // No prazo
 sistema.addParcela('2025-10-05');
 
+sistema.getTotal()
 console.table(sistema.getHistorico())
