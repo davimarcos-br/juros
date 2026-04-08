@@ -87,7 +87,7 @@ export default function Parcela() {
     <Contador/>
     </Container>
     <ContainerBtns>
-    <Btn onPress={() => router.push('/juros')}>
+    <Btn onPress={() => router.push('/add')}>
         <TextButton>Concluir</TextButton>
        </Btn>
     </ContainerBtns>

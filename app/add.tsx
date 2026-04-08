@@ -1,22 +1,12 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import MaskInput, { Masks } from 'react-native-mask-input';
+import MaskInput from 'react-native-mask-input';
 import styled from 'styled-components/native';
+import NumericKeyboard from './components/keyboard';
 
-
-
-
-const Wrapper = styled.View`
-
-   justify-content: center;
-  align-items: center;
-  padding: 10px;
-`;
-
-export const Label = styled.Text`
-  font-size: 18px;
-
-`;
+const Action = () =>{
+  
+}
 
 export const Btn = styled.TouchableOpacity`
   width: 80%;
@@ -37,11 +27,10 @@ export const TextButton = styled.Text`
 export const Container = styled.View`
   flex: 1;
   background-color: #ececec;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   padding: 20px;
 `; 
-
 export const ContainerBtns = styled.View`
   background: #FFF;
   justify-content: center;
@@ -51,29 +40,37 @@ export const ContainerBtns = styled.View`
 `; 
 
 export const Mask = styled(MaskInput)`
-  width: 200px;
-  border-radius: 8px;
-  padding: 10px;
-  border: 1px solid #000;
+  width: 300px;
+ 
+  
   margin: 5px;
-  padding: 15px;
-  font-size: 28px;
+  
+  font-size: 35px;
   text-decoration: none;
   text-align: center;
 
 `; 
+export const Label = styled.Text`
+  font-size: 18px;
+  border-bottom:1px;
+`;
 
-export default function Base() {
+const Wrapper = styled.View`
+
+   justify-content: center;
+  align-items: center;
+  padding: 10px;
+ 
+`;
+
+export default function Parcela() {
   const router = useRouter();
   const [Data, setData] = React.useState('');
-  const [Valor, setValor] = React.useState('');
   return (
   <>
-    <Container>
-    <Wrapper>
-      <Label>
-        Previsão do pagamento
-      </Label>
+        <Container>
+        <Wrapper>
+      
      <Mask
       value={Data}
       onChangeText={(masked, unmasked) => {
@@ -85,36 +82,19 @@ export default function Base() {
       }}
       mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
       keyboardType="numeric" 
-      placeholder="" 
+      placeholder="05/05/2005" 
     />  
-    </Wrapper>
-      
-    <Wrapper>
     <Label>
-        Valor do documento
-      </Label>
-     <Mask
-      value={Valor}
-      onChangeText={(masked, unmasked) => {
-        setValor(masked); // you can use the unmasked value as well
-
-        // assuming you typed "9" all the way:
-        console.log(masked); // (99) 99999-9999
-        console.log(unmasked); // 99999999999
-      }}
-      mask={Masks.BRL_CURRENCY}
-      keyboardType="numeric"
-      placeholder="" 
-      
-
-    />  
+        Data do Vencimento
+    </Label>
     </Wrapper>
+   
     </Container>
-    <ContainerBtns>
-        <Btn onPress={() => router.push('/parcela')}>
-        <TextButton>Avançar...</TextButton>
-       </Btn>
-    </ContainerBtns>
+    <NumericKeyboard
+        onKeyPress={Action}
+        onDelete={Action}
+        onConfirm={Action}
+      />
     </>
   );
 }

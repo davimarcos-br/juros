@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
+
 import styled from 'styled-components/native';
   const BtnConteiner = styled.View`
     flex-direction: row;
@@ -26,6 +27,9 @@ import styled from 'styled-components/native';
 const Contador = () => {
   // Define o estado inicial como 0
   const [contador, setContador] = useState(0);
+  const [isChecked, setChecked] = useState(false);
+
+
 
   // Função para incrementar
   const incrementar = () => {
@@ -40,12 +44,14 @@ const Contador = () => {
 
   return (
     <>
+      
         <Separador />
         <Label>
+          
             Número de parcelas 
         </Label>
-  
-        <BtnConteiner>
+   
+        <BtnConteiner pointerEvents="none">
             <Pressable style={styles.btn}  onPress={decrementar}>
                 <Ionicons name="remove" size={40} color={'#000'} />
             </Pressable>
@@ -54,6 +60,7 @@ const Contador = () => {
                 <Ionicons name="add" size={40} color={'#000'} />
             </Pressable>
         </BtnConteiner>
+      
    </>
   );
 };
