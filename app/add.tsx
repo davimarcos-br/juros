@@ -29,7 +29,7 @@ export const Container = styled.View`
   background-color: #ececec;
   justify-content: flex-end;
   align-items: center;
-  padding: 20px;
+  padding: 0 20px ;
 `; 
 export const ContainerBtns = styled.View`
   background: #FFF;
@@ -52,7 +52,7 @@ export const Mask = styled(MaskInput)`
 `; 
 export const Label = styled.Text`
   font-size: 18px;
-  border-bottom:1px;
+  margin-bottom: 20px;
 `;
 
 const Wrapper = styled.View`
@@ -63,6 +63,14 @@ const Wrapper = styled.View`
  
 `;
 
+export const HorizontalRule = styled.View`
+  height: 1px;
+  width: 60%;
+  background-color: #ccc;
+  margin: 0 auto
+  
+`;
+
 export default function Parcela() {
   const router = useRouter();
   const [Data, setData] = React.useState('');
@@ -70,6 +78,9 @@ export default function Parcela() {
   <>
         <Container>
         <Wrapper>
+        <Label>
+            Data do Vencimento
+        </Label>
       
      <Mask
       value={Data}
@@ -84,12 +95,10 @@ export default function Parcela() {
       keyboardType="numeric" 
       placeholder="05/05/2005" 
     />  
-    <Label>
-        Data do Vencimento
-    </Label>
     </Wrapper>
-   
+    <HorizontalRule/>
     </Container>
+    
     <NumericKeyboard
         onKeyPress={Action}
         onDelete={Action}
