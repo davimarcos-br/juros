@@ -3,6 +3,7 @@ import React from 'react';
 import MaskInput from 'react-native-mask-input';
 import styled from 'styled-components/native';
 
+import Contador from './components/contador';
 export const Btn = styled.TouchableOpacity`
   width: 80%;
   border-radius: 8px;
@@ -67,7 +68,7 @@ export default function Parcela() {
         <Container>
         <Wrapper>
       <Label>
-        Previsão do pagamento
+        Data do Vencimento
       </Label>
      <Mask
       value={Data}
@@ -83,12 +84,14 @@ export default function Parcela() {
       placeholder="" 
     />  
     </Wrapper>
+    <Contador/>
     </Container>
     <ContainerBtns>
     <Btn onPress={() => router.push('/juros')}>
         <TextButton>Concluir</TextButton>
        </Btn>
     </ContainerBtns>
+    
     </>
   );
 }
