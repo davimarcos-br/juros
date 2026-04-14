@@ -1,12 +1,19 @@
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
-import React from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { useState } from 'react';
 import MaskInput, { Masks } from 'react-native-mask-input';
 import styled from 'styled-components/native';
 import NumericKeyboard from './components/keyboard';
+import { appStore } from './stores/appStore';
 import { Btn, BtnScreem, TextButton } from './styles/global';
 
 
+dayjs.extend(customParseFormat);
 
 export const Container = styled.View`
   flex: 1;
@@ -50,30 +57,39 @@ export const HorizontalRule = styled.View`
   margin: 0 auto
 `;
 
-export default function Add() {
-  const router = useRouter();
 
-  const date = new Date();
+export default function DatePay1(){
+  return(<Component />)
+}
   
-  const [Data, setData] = React.useState('');
 
+export const Component = observer(() => {
+  const router = useRouter();
+  const date = new Date();  
+  const dt_payment = appStore.dtPayment
+  const [Data, setData] = useState(dt_payment.toLocaleDateString('pt-BR'));
   const handleKeyPress = (key: string) => {
     setData(prev => prev + key);
   };
-
   const handleDelete = () => {
     setData(prev => prev.slice(0, -1));
   };
-
   const handleClear = () => {
     setData('');
   };
 
+  const handlePayment = () => {
+    
+    appStore.dtPayment =  new Date()
+    appStore.incrementCounter()
+  };
+
+  
   return (
   <>
   <Stack.Screen
         options={{
-          title: 'Data do vencimento',
+          title: 'Data do pagamento',
           headerTitleAlign: 'center',
   
            headerLeft: () => (
@@ -87,7 +103,7 @@ export default function Add() {
         <Container>
         <Wrapper>
         <Label>
-            
+            { appStore.dtPayment }
         </Label>
       
      <Mask
@@ -113,11 +129,11 @@ export default function Add() {
         onClear={handleClear}
     />
     <ContainerBtns>
-      <Btn onPress={() => router.push('/valorReal')}>
-        <TextButton>Concluir</TextButton>
+      <Btn onPress={handlePayment}>
+        <TextButton>{appStore.counterInfo}</TextButton>
       </Btn>
     </ContainerBtns>
     </>
   );
-}
+})
 

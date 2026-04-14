@@ -4,8 +4,8 @@ import React from 'react';
 import MaskInput, { Masks } from 'react-native-mask-input';
 import styled from 'styled-components/native';
 import NumericKeyboard from './components/keyboard';
+import { global } from './stores/global';
 import { Btn, BtnScreem, TextButton } from './styles/global';
-
 
 
 export const Container = styled.View`
@@ -50,12 +50,12 @@ export const HorizontalRule = styled.View`
   margin: 0 auto
 `;
 
-export default function Add() {
+export default function DatePay() {
   const router = useRouter();
 
   const date = new Date();
   
-  const [Data, setData] = React.useState('');
+  const [Data, setData] = React.useState(date.toLocaleDateString('en-GB'));
 
   const handleKeyPress = (key: string) => {
     setData(prev => prev + key);
@@ -69,11 +69,16 @@ export default function Add() {
     setData('');
   };
 
+  const actionBtn = () => {
+    global.dtPagamento = Data
+    router.push('/valorReal')
+  }
+
   return (
   <>
   <Stack.Screen
         options={{
-          title: 'Data do vencimento',
+          title: 'Data do pagamento',
           headerTitleAlign: 'center',
   
            headerLeft: () => (
@@ -87,7 +92,7 @@ export default function Add() {
         <Container>
         <Wrapper>
         <Label>
-            
+            Previsão do pagamento
         </Label>
       
      <Mask
@@ -113,8 +118,8 @@ export default function Add() {
         onClear={handleClear}
     />
     <ContainerBtns>
-      <Btn onPress={() => router.push('/valorReal')}>
-        <TextButton>Concluir</TextButton>
+      <Btn onPress={actionBtn}>
+        <TextButton>Avançar</TextButton>
       </Btn>
     </ContainerBtns>
     </>

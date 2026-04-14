@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import MaskInput from 'react-native-mask-input';
+import MaskInput, { Masks } from 'react-native-mask-input';
 import styled from 'styled-components/native';
 
-import Contador from './components/contador';
 export const Btn = styled.TouchableOpacity`
   width: 80%;
   border-radius: 8px;
@@ -79,12 +78,12 @@ export default function Parcela() {
         console.log(masked); // (99) 99999-9999
         console.log(unmasked); // 99999999999
       }}
-      mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
-      keyboardType="numeric" 
-      placeholder="" 
+      mask={Masks.DATE_DDMMYYYY}
+      placeholder="dd/mm/aaaa"
+      underlineColorAndroid="transparent" 
     />  
     </Wrapper>
-    <Contador/>
+
     </Container>
     <ContainerBtns>
     <Btn onPress={() => router.push('/add')}>

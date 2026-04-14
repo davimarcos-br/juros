@@ -7,9 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const KeyboardContainer = styled.View`
   width: 100%;
   padding: 10px;
-  margin-bottom: 30px;
   background-color: #ececec;
-  
 `;
 
 const Row = styled.View`
@@ -20,7 +18,7 @@ const Row = styled.View`
 
 const Key = styled.TouchableOpacity`
   width: 30%;
-  height: 60px;
+  height: 50px;
   //background-color: #fff;
   justify-content: center;
   align-items: center;
@@ -34,17 +32,18 @@ const KeyText = styled.Text`
   color: #333;
 `;
 
-
 // --- Componente ---
 interface NumericKeyboardProps {
   onKeyPress: (key: string) => void;
   onDelete: () => void;
-  onConfirm: () => void;
+
+  onClear: () => void;
 }
 
-const NumericKeyboard: React.FC<NumericKeyboardProps> = ({ onKeyPress, onDelete, onConfirm }) => {
+const NumericKeyboard: React.FC<NumericKeyboardProps> = ({ onKeyPress, onDelete, onConfirm, onClear }) => {
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
+  
   return (
     <KeyboardContainer>
       {/* Renderiza as linhas 1-3, 4-6, 7-9 */}
@@ -60,7 +59,7 @@ const NumericKeyboard: React.FC<NumericKeyboardProps> = ({ onKeyPress, onDelete,
 
       {/* Linha final: Apagar, 0, Confirmar */}
       <Row>
-        <Key onPress={onDelete}>
+        <Key onPress={onClear}>
         <Ionicons name="close" size={32}  />
         </Key>
         <Key onPress={() => onKeyPress('0')}>

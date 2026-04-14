@@ -1,10 +1,25 @@
-class GerenciadorMultas {
-    constructor(valorOriginal, dataBase = new Date(), mora = 0.8 , multa = 0.02) { // 2% padrão
-        this.historicoMultas = []
+import { makeAutoObservable } from 'mobx';
+
+class CtrlMultasStore {
+    historicoMultas = []
+    _valorOriginal = 0
+    constructor(mora = 0.8 , multa = 0.02) { // 2% padrão
+        makeAutoObservable(this);
         this.multa = multa
         this.mora = mora
-        this.dataBase = dataBase
-        this.valorOriginal = valorOriginal
+        this._dtPayment = new Date()   
+    }
+
+    set dtPayment(dtPayment){
+        this._dtPayment = dtPayment
+    }
+
+    get dtPayment(){
+        return this._dtPayment
+    }
+
+    set valorOriginal(valorOriginal){
+        this._valorOriginal = valorOriginal 
     }
 
     diasCorridos(vencimento) {
@@ -16,10 +31,10 @@ class GerenciadorMultas {
         d2.setHours(0,0,0,0);
       
         const milissegundosPorDia = 24 * 60 * 60 * 1000;
-        console.log(milissegundosPorDia)
+        
         // Math.abs garante que o resultado seja positivo, independente da ordem
         let dias = Math.abs(Math.round((d2 - d1) / milissegundosPorDia)) - 1;
-        console.log("Dias ",dias)
+        
         return dias 
       }
 
@@ -33,9 +48,6 @@ class GerenciadorMultas {
         let permanencia =  0
         let total = 0
 
-        console.log("perma", permanencia)
-        console.log("mora", (this.mora* permanencia))
-       
         if (this.dataBase > vencimento) {
             multa = this.valorOriginal * this.multa;
             permanencia = this.mora * dias
@@ -51,32 +63,20 @@ class GerenciadorMultas {
         };
 
         this.historicoMultas.push(registro);
-        console.log(registro)
-        return registro;
     }
 
-    getHistorico() {
+    get historico() {
         return this.historicoMultas;
     }
 
-    getTotal(){
+    get total(){
         const total = this.historicoMultas.reduce((a, parcela) => {
-            console.log(a + parcela.total)
             return a + parcela.total;
           }, 0); // 0 é o valorInicial
           
-          console.log("total",total); 
-        return total
+        return +total.toFixed(2)
     }
 }
 
-// --- Exemplo de Uso ---
-const sistema = new GerenciadorMultas(4000); // Taxa de 5%
 
-// Vencido
-sistema.addParcela('2026-04-01')
-// No prazo
-sistema.addParcela('2025-10-05');
-
-sistema.getTotal()
-console.table(sistema.getHistorico())
+export const ctrlMultasStore = new CtrlMultasStore();
