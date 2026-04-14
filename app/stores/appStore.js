@@ -7,7 +7,7 @@ class AppStore {
   counter = 0;
   multa = 0
   mora = 0
-  _dtPayment = null
+  _dtPayment = ''
   _amount = 0
 
   constructor( mora = 0.8 , multa = 0.02) {

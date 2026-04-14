@@ -1,19 +1,20 @@
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { format, parse } from 'date-fns';
+
+import { MaskedText } from "react-native-mask-text";
 
 
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import MaskInput, { Masks } from 'react-native-mask-input';
+import MaskInput from 'react-native-mask-input';
 import styled from 'styled-components/native';
 import NumericKeyboard from './components/keyboard';
 import { appStore } from './stores/appStore';
 import { Btn, BtnScreem, TextButton } from './styles/global';
 
 
-dayjs.extend(customParseFormat);
+
 
 export const Container = styled.View`
   flex: 1;
@@ -65,9 +66,9 @@ export default function DatePay1(){
 
 export const Component = observer(() => {
   const router = useRouter();
-  const date = new Date();  
-  const dt_payment = appStore.dtPayment
-  const [Data, setData] = useState(dt_payment.toLocaleDateString('pt-BR'));
+  const dt = new Date();  
+ 
+  const [Data, setData] = useState(format(dt, 'ddMMyyyy'));
   const handleKeyPress = (key: string) => {
     setData(prev => prev + key);
   };
@@ -79,8 +80,13 @@ export const Component = observer(() => {
   };
 
   const handlePayment = () => {
-    
-    appStore.dtPayment =  new Date()
+    const dateString = Data;
+const formatString = "ddmmyyyy";
+const result = parse(dateString, formatString, new Date());
+appStore.dtPayment= result
+console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
+    //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
+    //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
     appStore.incrementCounter()
   };
 
@@ -103,22 +109,13 @@ export const Component = observer(() => {
         <Container>
         <Wrapper>
         <Label>
-            { appStore.dtPayment }
+          
         </Label>
-      
-     <Mask
-      value={Data}
-      onChangeText={(masked, unmasked) => {
-        setData(masked); // you can use the unmasked value as well
-
-        // assuming you typed "9" all the way:
-        console.log(masked); // (99) 99999-9999
-        console.log(unmasked); // 99999999999
-      }}
-      mask={Masks.DATE_DDMMYYYY}
-      placeholder="dd/mm/aaaa"
-      underlineColorAndroid="transparent" 
-    />  
+     
+        <MaskedText  mask="99/99/9999">
+        {Data}
+        </MaskedText>  
+    
     </Wrapper>
     <HorizontalRule/>
     </Container>
