@@ -59,7 +59,7 @@ export const HorizontalRule = styled.View`
 `;
 
 
-export default function DatePay1(){
+export default function DateAdd(){
   return(<Component />)
 } 
   
@@ -99,7 +99,7 @@ export const Component = observer(() => {
   <>
   <Stack.Screen
         options={{
-          title: 'Data do pagamento',
+          title: 'Vencimento do documento',
           headerTitleAlign: 'center',
   
            headerLeft: () => (
