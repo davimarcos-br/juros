@@ -87,11 +87,12 @@ export const Component = observer(() => {
   };
 
   const handleAction = () => {
-    appStore.dtPayment= parse(data, formatString, new Date());
-    console.log(format(appStore.dtPayment, 'dd/MM/yyyy'))
+    const dt = parse(data, formatString, new Date())
+    appStore.addParcela(dt);
+    console.table(appStore.parcelas)
     //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
     //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
-    router.push('/valorReal1')
+    router.push('/juros')
   };
 
   
