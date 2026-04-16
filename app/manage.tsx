@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
-import { Text } from 'react-native';
+import { observer } from 'mobx-react-lite';
+import { FlatList, Text } from 'react-native';
 import styled from 'styled-components/native';
+import { appStore } from './stores/appStore';
 
 export const Btn = styled.TouchableOpacity`
   width: 80%;
@@ -33,13 +35,27 @@ export const ContainerBtns = styled.View`
   box-shadow: 0 -1px 0  rgba(0, 0, 0, 0.1) ;
 `; 
 
+export default function Manage() {
+  return (<Component />)
+}
 
-export default function Parcela() {
+const Component = observer(() => {
   const router = useRouter();
+  console.table(appStore.parcelas)
+
+  const renderParcela = () => (
+    <Text>teste</Text>
+  );
+
   return (
   <>
     <Container>
-        <Text> Juros</Text>  
+      // Dentro do seu componente/render
+<FlatList 
+  data={appStore.parcelas} 
+  renderItem={renderParcela} 
+  keyExtractor={(item) => item.id.toString()} // Se houver, use o id
+/>  
     </Container>
     <ContainerBtns>
        <Btn>
@@ -48,5 +64,5 @@ export default function Parcela() {
     </ContainerBtns>
     </>
   );
-}
+})
 

@@ -64,7 +64,7 @@ export default function DatePay1(){
 } 
   
 
-export const Component = observer(() => {
+const Component = observer(() => {
   const router = useRouter();
    
   const [valid, setValid] = useState(false)
@@ -87,12 +87,12 @@ export const Component = observer(() => {
   };
 
   const handleAction = () => {
-    const dt = parse(data, formatString, new Date())
-    appStore.addParcela(dt);
-    console.table(appStore.parcelas)
-    //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
-    //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
-    router.push('/juros')
+       
+       appStore.dtPayment = parse(data, formatString, new Date());
+       
+       //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
+       //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
+       router.push('/valorReal1')
   };
 
   
