@@ -1,12 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
+import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import MaskInput from 'react-native-mask-input';
-import { MaskedText } from 'react-native-mask-text';
 import styled from 'styled-components/native';
 import NumericKeyboard from './components/keyboard';
 import { appStore } from './stores/appStore';
-import { Btn, BtnScreem, TextButton } from './styles/global';
+import { Btn, BtnScreem, Masked, TextButton } from './styles/global';
 
 export const Container = styled.View`
   flex: 1;
@@ -24,13 +23,7 @@ export const ContainerBtns = styled.View`
   box-shadow: 0 -1px 0  rgba(0, 0, 0, 0.1) ;
 `;
 
-export const Mask = styled(MaskInput)`
-  width: 300px;
-  margin: 5px;  
-  font-size: 35px;
-  text-decoration: none;
-  text-align: center;
-`;
+
 
 export const Label = styled.Text`
   font-size: 18px;
@@ -54,14 +47,18 @@ export default function ValorReal1() {
   return (<Component />)
 }
 
-const Component = () => {
+const Component = observer(() => {
   const router = useRouter();
   const [valid, setValid] = useState(false)
   const [digit, setDigit] = useState(true)
   const [Valor, setValor] = React.useState(0);
+
+  const isDisabled = Valor === 0;
+
   const handleKeyPress = (key: string) => {
     setValor(prev => prev + key);
   };
+
 
   const handleDelete = () => {
     setValor(prev => prev.slice(0, -1));
@@ -74,10 +71,10 @@ const Component = () => {
   const handleAction = () => {
     //const valeu = +Valor/100
     appStore.docValue = Valor / 100
-    console.log(+appStore.docValue.toFixed(2))
+  //  console.log(+appStore.docValue.toFixed(2))
     //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
     //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
-    router.push('/dateAdd1')
+    router.push('/vencimento')
   };
 
   return (
@@ -90,7 +87,7 @@ const Component = () => {
           headerLeft: () => (
             <BtnScreem
               onPress={() => router.push('/home')}>
-              <Ionicons name="arrow-back" size={25} />
+              <Ionicons name="close-outline" size={25} />
             </BtnScreem>
           ),
         }}
@@ -101,16 +98,15 @@ const Component = () => {
           <Label>
 
           </Label>
-          <MaskedText type="currency"
+          <Masked type="currency"
             options={{
               prefix: 'R$',
               decimalSeparator: ',',
               groupSeparator: '.',
               precision: 2,
-            }}
-          >
+            }}>
             {Valor}
-          </MaskedText>
+          </Masked>
 
         </Wrapper>
         <HorizontalRule />
@@ -122,12 +118,12 @@ const Component = () => {
         onClear={handleClear}
       />
       <ContainerBtns>
-        <Btn onPress={handleAction}>
-          <TextButton>{appStore.dtPayment.toString()}</TextButton>
+        <Btn disabled={isDisabled} onPress={handleAction}>
+          <TextButton>Avançar</TextButton>
         </Btn>
 
       </ContainerBtns>
     </>
   );
-}
+})
 

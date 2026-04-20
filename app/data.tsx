@@ -1,17 +1,15 @@
-import { format, parse } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 
-import { MaskedText } from "react-native-mask-text";
 
 
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import MaskInput from 'react-native-mask-input';
 import styled from 'styled-components/native';
 import NumericKeyboard from './components/keyboard';
 import { appStore } from './stores/appStore';
-import { Btn, BtnScreem, TextButton } from './styles/global';
+import { Btn, BtnScreem, Masked, TextButton } from './styles/global';
 
 const formatString = "ddMMyyyy";
 
@@ -32,18 +30,18 @@ export const ContainerBtns = styled.View`
   box-shadow: 0 -1px 0  rgba(0, 0, 0, 0.1) ;
 `; 
 
-export const Mask = styled(MaskInput)`
-  width: 300px;
-  margin: 5px;
-  
-  font-size: 35px;
-  text-decoration: none;
-  text-align: center;
-`; 
+ 
 export const Label = styled.Text`
   font-size: 18px;
   margin-bottom: 20px;
 `;
+
+const ErroMsg = styled.Text`
+  
+  font-size: 14px;
+  color: red;
+`;
+
 const Wrapper = styled.View`
 
    justify-content: center;
@@ -67,13 +65,19 @@ export default function DatePay1(){
 const Component = observer(() => {
   const router = useRouter();
    
-  const [valid, setValid] = useState(false)
+  const [valid, setValid] = useState(true)
   const [digit, setDigit] = useState(true)
 
   const [data, setData] = useState(format(new Date(), formatString));
   const handleKeyPress = (key: string) => {
+    if (!isDisabled) return
+    //setValid(isValid(parse(data, formatString, new Date())))
     setData(prev => prev + key);
   };
+
+
+
+  const isDisabled = data.length !== 8;  
   
   const handleDelete = () => {
     setData(prev => prev.slice(0, -1));
@@ -87,13 +91,15 @@ const Component = observer(() => {
   };
 
   const handleAction = () => {
-       
-       appStore.dtPayment = parse(data, formatString, new Date());
-       
-       //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
-       //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
-       router.push('/valorReal1')
-  };
+      setValid(isValid(parse(data, formatString, new Date())))
+      if (!valid)return
+
+        appStore.dtPayment =  parse(data, formatString, new Date()) 
+        //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))   
+        router.push('/valor')
+
+
+  }
 
   
   return (
@@ -106,7 +112,7 @@ const Component = observer(() => {
            headerLeft: () => (
             <BtnScreem 
               onPress={() => router.push('/home')}>
-              <Ionicons name="arrow-back" size={25} />
+              <Ionicons name="close-outline" size={25} />
             </BtnScreem>
           ),
         }}
@@ -117,9 +123,15 @@ const Component = observer(() => {
           
         </Label>
      
-        <MaskedText  mask="99/99/9999">
+      {!valid && (
+        <ErroMsg>
+          Por favor, insira uma data válida.
+        </ErroMsg>
+      )}
+        
+        <Masked  mask="99/99/9999">
         {data}
-        </MaskedText>  
+        </Masked>  
     
     </Wrapper>
     <HorizontalRule/>
@@ -131,8 +143,8 @@ const Component = observer(() => {
         onClear={handleClear}
     />
     <ContainerBtns>
-      <Btn disabled={!valid} onPress={handleAction}>
-        <TextButton>{appStore.counterInfo}</TextButton>
+      <Btn disabled={isDisabled} onPress={handleAction}>
+        <TextButton>Avançar</TextButton>
       </Btn>
     </ContainerBtns>
     </>

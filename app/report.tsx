@@ -1,10 +1,7 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
-import Lista from './components/lista';
-import Footer from './components/magane-footer';
-import Header from './components/magane-header';
+import Extrato from './components/extrato';
 
-import { Flex1, TextButton } from './styles/global';
 
 export const Container = styled.View`
   flex: 0;
@@ -37,22 +34,7 @@ export default function Manage() {
 
 
   return (<>
-
-      <Header />
-      <Lista />
-      <Footer />
-      <Flex1 />
-      <ContainerBtns>
-
-        <Btn  onPress={() => router.push('/vencimento')}>
-          <TextButton>Adicionar parcela...</TextButton>
-        </Btn>
-        <Btn onPress={() => router.push('/report')}>
-          <TextButton>Compartilhar...</TextButton>
-        </Btn>
-
-      </ContainerBtns>
-
+      <Extrato />
       </>
   );
 }

@@ -1,6 +1,4 @@
-import { format, parse } from 'date-fns';
-
-import { MaskedText } from "react-native-mask-text";
+import { isAfter, isValid, parse } from 'date-fns';
 
 
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +9,7 @@ import MaskInput from 'react-native-mask-input';
 import styled from 'styled-components/native';
 import NumericKeyboard from './components/keyboard';
 import { appStore } from './stores/appStore';
-import { Btn, BtnScreem, TextButton } from './styles/global';
+import { Btn, BtnScreem, ErroMsg, Masked, Placeholder, TextButton } from './styles/global';
 
 const formatString = "ddMMyyyy";
 
@@ -30,22 +28,20 @@ export const ContainerBtns = styled.View`
   align-items: center;
   padding: 10px;
   box-shadow: 0 -1px 0  rgba(0, 0, 0, 0.1) ;
-`; 
+`;
 
 export const Mask = styled(MaskInput)`
   width: 300px;
   margin: 5px;
-  
   font-size: 35px;
   text-decoration: none;
   text-align: center;
-`; 
+`;
 export const Label = styled.Text`
   font-size: 18px;
   margin-bottom: 20px;
 `;
 const Wrapper = styled.View`
-
    justify-content: center;
   align-items: center;
   padding: 10px;
@@ -59,22 +55,22 @@ export const HorizontalRule = styled.View`
 `;
 
 
-export default function DateAdd(){
-  return(<Component />)
-} 
-  
+export default function DateAdd() {
+  return (<Component />)
+}
+
 
 export const Component = observer(() => {
   const router = useRouter();
-   
-  const [valid, setValid] = useState(false)
+
+  const [valid, setValid] = useState(true)
   const [digit, setDigit] = useState(true)
 
-  const [data, setData] = useState(format(new Date(), formatString));
+  const [data, setData] = useState('');
   const handleKeyPress = (key: string) => {
     setData(prev => prev + key);
   };
-  
+
   const handleDelete = () => {
     setData(prev => prev.slice(0, -1));
     setValid(true)
@@ -87,53 +83,83 @@ export const Component = observer(() => {
   };
 
   const handleAction = () => {
-    appStore.dtPayment= parse(data, formatString, new Date());
-    
-    //appStore.dtPayment =  parse(Data, 'dd/mm/yyyy', new Date()) 
-    //console.log(format(appStore.dtPayment, 'dd/mm/yyyy'))
-    router.push('/manage')
+    setValid(isValid(parse(data, formatString, new Date())))
+    if (!valid) return
+
+    const dt = parse(data, formatString, new Date())
+    if (isAfter(appStore.dtPayment, dt)) {
+      appStore.addParcela(dt)
+      appStore.created()
+      router.push('/manage')
+
+    } else setValid(false)
+
+
   };
 
+  const handleHeader = () => {
+          return appStore.status === 'Creating'?
+          (<BtnScreem
+              onPress={() => router.push('/home')}
+            >
+              <Ionicons name="close-outline" size={25} />
+            </BtnScreem>
+          ):
+          (<BtnScreem
+              onPress={() => router.push('/manage')}
+            >
+              <Ionicons name="arrow-back" size={25} />
+            </BtnScreem>
+          )
+        }
+    
   
+
+  const isDisabled = data.length !== 8;
+  const isPlaceholderVisible = data == '';
+
   return (
-  <>
-  <Stack.Screen
+    <>
+      <Stack.Screen
         options={{
           title: 'Vencimento do documento',
           headerTitleAlign: 'center',
-  
-           headerLeft: () => (
-            <BtnScreem 
-              onPress={() => router.push('/home')}>
-              <Ionicons name="arrow-back" size={25} />
-            </BtnScreem>
-          ),
+
+          headerLeft: handleHeader
         }}
       />
-        <Container>
+      <Container>
         <Wrapper>
-        <Label>
-          
-        </Label>
-     
-        <MaskedText  mask="99/99/9999">
-        {data}
-        </MaskedText>  
-    
-    </Wrapper>
-    <HorizontalRule/>
-    </Container>
-    
-    <NumericKeyboard
+          <Label>
+
+          </Label>
+
+          {!valid && (
+            <ErroMsg>
+              Por favor, insira uma data válida.
+            </ErroMsg>
+          )}
+          {isPlaceholderVisible ?
+            <Placeholder>DD/MM/AAAA</Placeholder>
+            :
+            <Masked mask="99/99/9999">
+              {data}
+            </Masked>}
+
+        </Wrapper>
+        <HorizontalRule />
+      </Container>
+
+      <NumericKeyboard
         onKeyPress={handleKeyPress}
         onDelete={handleDelete}
         onClear={handleClear}
-    />
-    <ContainerBtns>
-      <Btn disabled={!valid} onPress={handleAction}>
-        <TextButton>{appStore.counterInfo}</TextButton>
-      </Btn>
-    </ContainerBtns>
+      />
+      <ContainerBtns>
+        <Btn disabled={isDisabled} onPress={handleAction}>
+          <TextButton>Concluir</TextButton>
+        </Btn>
+      </ContainerBtns>
     </>
   );
 })

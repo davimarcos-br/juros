@@ -1,7 +1,7 @@
+
 // AppStore.js
 import { differenceInDays, isValid } from 'date-fns';
 import { makeAutoObservable } from 'mobx';
-
 
 class AppStore {
   // Estado Observable
@@ -9,33 +9,47 @@ class AppStore {
   counter = 0;
   multa = 0
   mora = 0
+  _status = 'Creating'
   _dtPayment = ''
   _docValue = 0
   _parcelas = []
 
-  constructor( mora = 0.8 , multa = 0.02) {
+  constructor(mora = 0.8, multa = 0.02) {
     // makeAutoObservable transforma as propriedades em observáveis
     // e os métodos em ações automaticamente (MobX 6+)
     makeAutoObservable(this)
     this.multa = multa
     this.mora = mora
-    this._dtPayment = new Date() 
+    this._dtPayment = new Date()
   }
 
-  set dtPayment(dtPayment){
-        this._dtPayment = dtPayment
-    }
 
-  get dtPayment(){
-        return this._dtPayment
-    }
-
-  set docValue(value){
-      this._docValue = value
+  created() {
+    this._status = 'Created'
   }
 
-  get docValue(){
-      return this._docValue
+  editing() {
+    this._status = 'Editing'
+  }
+
+  get status() {
+    return this._status
+  }
+
+  set dtPayment(dtPayment) {
+    this._dtPayment = dtPayment
+  }
+
+  get dtPayment() {
+    return this._dtPayment
+  }
+
+  set docValue(value) {
+    this._docValue = value
+  }
+
+  get docValue() {
+    return this._docValue
   }
 
   dias(vencimento) {
@@ -49,35 +63,51 @@ class AppStore {
     if (dias < 0) return
 
     let multa = 0
-    let permanencia =  0
+    let permanencia = 0
     let total = 0
 
     multa = this._docValue * this.multa;
     permanencia = this.mora * dias
-    total =  this.valorOriginal + multa + permanencia;
-  
+    total = this._docValue + multa + permanencia;
+
     const registro = {
-        vencimento: vencimento,
-        multa: +multa.toFixed(2),
-        permanencia: +permanencia.toFixed(2),
-        total: +total.toFixed(2),
-        diasAtraso: dias
+      vencimento: vencimento,
+      multa: +multa.toFixed(2),
+      permanencia: +permanencia.toFixed(2),
+      total: +total.toFixed(2),
+      diasAtraso: dias
     };
 
     this._parcelas.push(registro);
-    }
-
-  get parcelas() {
-  return this._parcelas;
   }
 
-  get total(){
-    const total = this._parcelas.reduce((a, parcela) => {
-        return a + parcela.total;
-      }, 0); // 0 é o valorInicial
-      
+  get parcelas() {
+    return this._parcelas;
+  }
+
+  get totalMultas() {
+    const multa = this._parcelas.reduce((a, parcela) => {
+      return a + parcela.multa;
+    }, 0); // 0 é o valorInicial
+
     return +total.toFixed(2)
-}
+  }
+
+    get totalPermanencia() {
+    const permanencia = this._parcelas.reduce((a, parcela) => {
+      return a + parcela.permanencia;
+    }, 0); // 0 é o valorInicial
+
+    return +permanencia.toFixed(2)
+  }
+
+  get total() {
+    const total = this._parcelas.reduce((a, parcela) => {
+      return a + parcela.total;
+    }, 0); // 0 é o valorInicial
+
+    return +total.toFixed(2)
+  }
 
   // Ações (Actions) - Modificam o estado
   setUsername(newUsername) {
